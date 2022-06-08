@@ -24,6 +24,8 @@ function App() {
   let [ddabong, setDdabong] = useState([0, 0, 0]);
 
   let [modal, setModal] = useState(false);
+  let [title, setTitle] = useState(0);
+  let [invalue, setInvalue] = useState();
 
   // react에서 반복문 : 맵 함수 
   // 1.array 자료 갯수만큼 함수안의 코드 실행해줌 
@@ -56,6 +58,7 @@ function App() {
     newSubject[0] = '여자 시계 추천';
     setSubject(newSubject);
   }
+  
 
   return (
     <div className="App">
@@ -63,28 +66,12 @@ function App() {
       <div className="black-nav">
         <div>개발 Blog</div>
       </div>
-      {/* <button onClick={ textChange }>버튼</button>
-      <div className="list">
-        <h3> { subject[0] } <span onClick={ () => {setDdabong(ddabong+1)} }>👍</span> {ddabong} </h3>
-        <p>날짜</p>
-        <hr/>
-      </div>
-      <div className="list">
-        <h3 onClick={()=>{switchModal(modal)}}> { subject[1] } </h3>
-        <p>날짜</p>
-        <hr/>
-      </div>
-      <div className="list">
-        <h3> { subject[2] } </h3>
-        <p>날짜</p>
-        <hr/>
-      </div> */}
 
       {
         subject.map(function(a, i){
           return (
             <div className="list">
-            <h3 onClick={()=>setModal(!modal)}> { a } { i } <span onClick={ () => {clickDdabong(i)} }>👍</span> {ddabong[i]} </h3>
+            <h3 onClick={()=>{setModal(!modal); setTitle(i);}}> { a } { i } <span onClick={ () => {clickDdabong(i)} }>👍</span> {ddabong[i]} </h3>
             <p>날짜</p>
             <hr/>
           </div>
@@ -92,8 +79,12 @@ function App() {
         })
       }
 
+      <input onChange={(e)=>{
+        setInvalue(e.target.value);
+      }}></input>
+
       {
-        modal == true ? <Modal subject={subject} color={'pink'} modifySubject={modifySubject} /> : null
+        modal == true ? <Modal title={title} subject={subject} color={'pink'} modifySubject={modifySubject} /> : null
       }
 
     </div>
@@ -104,9 +95,10 @@ function App() {
 // 1. component 이름은 대문자 2. return()안에 있는건 태그 하나로 묶어야 함
 // 단점: state 쓸 때 복잡해짐. 상위 component에서 만든 state쓰려면 props 문법 써야함.
 function Modal(props){
+
   return(
     <div className='modal' style={{background: props.color}}>
-      <h2>{props.subject[0]}</h2>
+      <h2>{props.subject[props.title]}</h2>
       <p>날짜</p>
       <p>상세내용</p>
       <button onClick={() => {props.modifySubject()}}>글수정</button>
@@ -115,3 +107,8 @@ function Modal(props){
 }
 
 export default App;
+
+
+// input 글 누르면 나오게
+// 2. 글마다 삭제버튼 기능 만들기
+// 둘다 state 조작
