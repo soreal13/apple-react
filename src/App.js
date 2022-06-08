@@ -58,7 +58,23 @@ function App() {
     newSubject[0] = '여자 시계 추천';
     setSubject(newSubject);
   }
-  
+
+  function addBlog(e) {
+    let newBlogSubject = [...subject];
+    newBlogSubject.push(e);
+    setSubject(newBlogSubject);
+  }
+
+  function deleteBlog(n) {
+    let newBlogList = [];
+    for (let i=0; i<subject.length; i++) {
+      if (i != n) {
+        newBlogList.push(subject[i])
+      }
+    }
+    setSubject(newBlogList);
+  }
+
 
   return (
     <div className="App">
@@ -73,15 +89,15 @@ function App() {
             <div className="list">
             <h3 onClick={()=>{setModal(!modal); setTitle(i);}}> { a } { i } <span onClick={ () => {clickDdabong(i)} }>👍</span> {ddabong[i]} </h3>
             <p>날짜</p>
+            <button onClick={()=>deleteBlog(i)}>삭제</button>
             <hr/>
           </div>
           )
         })
       }
 
-      <input onChange={(e)=>{
-        setInvalue(e.target.value);
-      }}></input>
+      <input className="text"></input>
+      <button onClick={()=>addBlog(document.getElementsByClassName("text")[0].value)}>등록</button>
 
       {
         modal == true ? <Modal title={title} subject={subject} color={'pink'} modifySubject={modifySubject} /> : null
@@ -109,6 +125,6 @@ function Modal(props){
 export default App;
 
 
-// input 글 누르면 나오게
+// 1. input 글 누르면 나오게 -> 완료
 // 2. 글마다 삭제버튼 기능 만들기
 // 둘다 state 조작
