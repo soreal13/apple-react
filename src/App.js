@@ -169,6 +169,6 @@ class Profile extends React.Component {
 export default App;
 
 
-// 1. input 글 누르면 나오게 -> 완료
+// input 글 누르면 나오게
 // 2. 글마다 삭제버튼 기능 만들기
 // 둘다 state 조작
