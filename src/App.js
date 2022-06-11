@@ -1,5 +1,6 @@
 /* eslint-disable */
 
+import { render } from '@testing-library/react';
 import React, { useState } from 'react';
 import './App.css';
 
@@ -25,7 +26,8 @@ function App() {
 
   let [modal, setModal] = useState(false);
   let [title, setTitle] = useState(0);
-  let [invalue, setInvalue] = useState();
+  let [invalue, setInvalue] = useState('');
+  let [daylist, setDaylist] = useState(['2022년 1월 3일', '2021년 12월 27일', '2021년 10월 31일']);
 
   // react에서 반복문 : 맵 함수 
   // 1.array 자료 갯수만큼 함수안의 코드 실행해줌 
@@ -59,19 +61,37 @@ function App() {
     setSubject(newSubject);
   }
 
-  function addBlog(e) {
-    let newBlogSubject = [...subject];
-    newBlogSubject.push(e);
-    setSubject(newBlogSubject);
+  function addBlog() {
+    if (invalue == '') {
+      alert('내용을 입력해주세요!');
+    } else {
+      let newBlogSubject = [...subject];
+      newBlogSubject.unshift(invalue);
+      setSubject(newBlogSubject);  
+
+      let newDdabongList = [...ddabong];
+      newDdabongList.unshift(0);
+      setDdabong(newDdabongList);
+
+      let newDayList = [...daylist];
+      let today = new Date();
+      let year = today.getFullYear();
+      let month = (today.getMonth()+1);
+      let day = today.getDate();
+      let dayString = year + '년 ' + month + '월 ' + day + '일';
+      newDayList.unshift(dayString);
+      setDaylist(newDayList);
+    }
   }
 
   function deleteBlog(n) {
-    let newBlogList = [];
-    for (let i=0; i<subject.length; i++) {
-      if (i != n) {
-        newBlogList.push(subject[i])
-      }
-    }
+    let newBlogList = [...subject];
+    // for (let i=0; i<subject.length; i++) {
+    //   if (i != n) {
+    //     newBlogList.push(subject[i])
+    //   }
+    // }
+    newBlogList.splice(n, 1);
     setSubject(newBlogList);
   }
 
@@ -88,7 +108,7 @@ function App() {
           return (
             <div className="list">
             <h3 onClick={()=>{setModal(!modal); setTitle(i);}}> { a } { i } <span onClick={ () => {clickDdabong(i)} }>👍</span> {ddabong[i]} </h3>
-            <p>날짜</p>
+            <p>{daylist[i]}</p>
             <button onClick={()=>deleteBlog(i)}>삭제</button>
             <hr/>
           </div>
@@ -96,12 +116,14 @@ function App() {
         })
       }
 
-      <input className="text"></input>
-      <button onClick={()=>addBlog(document.getElementsByClassName("text")[0].value)}>등록</button>
+      <input onChange={(e)=>setInvalue(e.target.value)}></input>
+      <button onClick={()=>addBlog()}>등록</button>
 
       {
-        modal == true ? <Modal title={title} subject={subject} color={'pink'} modifySubject={modifySubject} /> : null
+        modal == true ? <Modal title={title} subject={subject} day={day} color={'pink'} modifySubject={modifySubject} /> : null
       }
+
+      <Profile/>
 
     </div>
   );
@@ -115,12 +137,34 @@ function Modal(props){
   return(
     <div className='modal' style={{background: props.color}}>
       <h2>{props.subject[props.title]}</h2>
-      <p>날짜</p>
+      <p>{props.day}</p>
       <p>상세내용</p>
       <button onClick={() => {props.modifySubject()}}>글수정</button>
     </div>
   )
 }
+
+// 옛날 문법
+class Profile extends React.Component {
+  constructor() {
+    super();
+    this.state = { name : 'Kim', age : 30}
+  }
+  changeName = () => {
+    this.setState( {name: 'Chang'} )
+  }
+
+  render(){
+    return (
+      <div>
+        <div>프로필 정보</div>
+        <p>내 이름은 {this.state.name} 입니다.</p>
+        <button onClick={ this.changeName.bind(this) }>버튼</button>
+      </div>
+    )
+  }
+}
+
 
 export default App;
 
